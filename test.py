@@ -2,13 +2,13 @@ import re
 import csv
 from collections import Counter
 
-# --- CONFIGURATION ---
+
 INPUT_FILE = 'tcpdump.txt'
 OUTPUT_CSV = 'network_analysis.csv'
 OUTPUT_HTML = 'dashboard_network.html'
 
 def extract_data(filename):
-    """Extrait les noms d'hôtes ou IPs sources du format tcpdump."""
+    
 
     ip_pattern = re.compile(r'IP\s+([0-9a-zA-Z\-\.]+)\.\d+\s+>')
     ip_list = []
@@ -24,7 +24,7 @@ def extract_data(filename):
         return []
 
 def generate_web_dashboard(top_5, all_counts):
-    """Génère une page HTML avec un tableau et un graphique interactif."""
+    
    
     labels = [str(ip) for ip, count in top_5]
     values = [count for ip, count in top_5]
