@@ -8,7 +8,7 @@ OUTPUT_CSV_PROTOCOLS = 'analyse_protocle.csv'
 OUTPUT_HTML = 'website.html'
 
 def extract_data(filename):
-    """Extrait les adresses IP et les protocoles du fichier tcpdump"""
+    
     
    
     ip_pattern = re.compile(r'IP\s+([0-9a-zA-Z\-\.]+)\.\d+\s+>')
@@ -16,7 +16,7 @@ def extract_data(filename):
    
     protocol_pattern = re.compile(r':\s+([A-Z]+)')
     
-    # Pattern alternatif pour les protocoles en début de ligne
+   
     protocol_pattern2 = re.compile(r'^([A-Z]+[0-9]*)\s+')
     
     ip_list = []
@@ -25,21 +25,21 @@ def extract_data(filename):
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             for line in file:
-                # Extraction des IPs
+                
                 ip_match = ip_pattern.search(line)
                 if ip_match:
                     ip_list.append(ip_match.group(1))
                 
-                # Extraction des protocoles (méthode 1)
+                
                 protocol_match = protocol_pattern.search(line)
                 if protocol_match:
                     protocol_list.append(protocol_match.group(1))
                 else:
-                    # Extraction des protocoles (méthode 2 - début de ligne)
+                   
                     protocol_match2 = protocol_pattern2.search(line.strip())
                     if protocol_match2:
                         proto = protocol_match2.group(1)
-                        # Filtrer les protocoles valides
+                      
                         if proto in ['TCP', 'UDP', 'ICMP', 'ARP', 'IP', 'IP6', 'DNS', 'HTTP', 'HTTPS', 'FTP', 'SSH']:
                             protocol_list.append(proto)
                 
@@ -60,15 +60,15 @@ def save_to_csv(data_dict, filename, headers):
 def generate_web_dashboard(top_5_ips, all_ip_counts, protocol_counts):
     """Génère le dashboard web complet avec IPs et protocoles"""
     
-    # Données pour le graphique des IPs
+ 
     ip_labels = [str(ip) for ip, count in top_5_ips]
     ip_values = [count for ip, count in top_5_ips]
     
-    # Données pour le graphique des protocoles
+    
     protocol_labels = [str(proto) for proto, count in protocol_counts.most_common(10)]
     protocol_values = [count for proto, count in protocol_counts.most_common(10)]
     
-    # Statistiques générales
+  
     total_ips = len(all_ip_counts)
     total_packets = sum(all_ip_counts.values())
     total_protocols = len(protocol_counts)
@@ -334,26 +334,24 @@ def generate_web_dashboard(top_5_ips, all_ip_counts, protocol_counts):
 def main():
     print("🔍 Début de l'analyse des logs réseau...")
     
-    # Extraction des données
+   
     ips, protocols = extract_data(INPUT_FILE)
     
     if not ips and not protocols:
         print("❌ Aucune donnée extraite. Vérifiez le fichier d'entrée.")
         return
     
-    # Comptage des occurrences
+    
     ip_counts = Counter(ips)
     protocol_counts = Counter(protocols)
     top_5_ips = ip_counts.most_common(5)
-    
-    # Sauvegarde en CSV
+  
     save_to_csv(ip_counts, OUTPUT_CSV_IPS, ['Adresse_IP', 'Nombre_Paquets'])
     save_to_csv(protocol_counts, OUTPUT_CSV_PROTOCOLS, ['Protocole', 'Nombre_Occurrences'])
     
-    # Génération du dashboard
-    generate_web_dashboard(top_5_ips, ip_counts, protocol_counts)
     
-    # Affichage des résultats
+    generate_web_dashboard(top_5_ips, ip_counts, protocol_counts)
+   
     print(f"\n📈 Statistiques générales :")
     print(f"   • {len(ip_counts)} adresses IP uniques détectées")
     print(f"   • {sum(ip_counts.values()):,} paquets au total")
